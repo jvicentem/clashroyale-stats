@@ -34,7 +34,7 @@ with open(file_path, 'r') as csv_file:
 
     da_file_path = './clash-royale-da.csv'
 
-    fields = (['my_result', 'my_score', 'points', 'opponent_score', 'my_trophies', 'opponent_trophies', 'opponent_has_clan', 'match_type']
+    fields = (['my_result', 'my_score', 'points', 'opponent_score', 'my_trophies', 'opponent_trophies', 'i_have_clan', 'opponent_has_clan', 'match_type']
                 + op_cards + my_cards 
              )
     
@@ -54,6 +54,7 @@ with open(file_path, 'r') as csv_file:
             line['opponent_score'] = row['opponent_score']
             line['my_trophies'] = row['my_trophies']
             line['opponent_trophies'] = row['opponent_trophies']
+            line['i_have_clan'] = row['i_have_clan']
             line['opponent_has_clan'] = row['opponent_has_clan']
             line['match_type'] = row['match_type']
 
