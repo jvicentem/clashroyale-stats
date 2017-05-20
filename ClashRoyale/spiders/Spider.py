@@ -38,6 +38,8 @@ class Crawler(CrawlSpider):
 
             clans = battle.css('.replay__clanName::text').extract()
 
+            battle_obj['i_have_clan'] = 'n' if 'No Clan' == clans[0].strip() else 'y'
+
             battle_obj['opponent_has_clan'] = 'n' if 'No Clan' == clans[1].strip() else 'y'
 
             battle_obj['match_type'] = battle.css('div.replay__header > div.replay__type > div::attr(class)')[0].extract()
@@ -94,7 +96,7 @@ class Crawler(CrawlSpider):
 
         with open(aux_file_path, 'w+') as csv_file:
             fields = (['my_result', 'my_score', 'points', 'opponent_score', 
-                'my_trophies', 'opponent_trophies', 'opponent_has_clan', 'match_type',
+                'my_trophies', 'opponent_trophies', 'i_have_clan', 'opponent_has_clan', 'match_type',
                 'my_card_1', 'my_card_1_lvl', 'my_card_2', 'my_card_2_lvl', 'my_card_3', 'my_card_3_lvl', 
                 'my_card_4', 'my_card_4_lvl', 'my_card_5', 'my_card_5_lvl', 'my_card_6','my_card_6_lvl', 
                 'my_card_7', 'my_card_7_lvl', 'my_card_8','my_card_8_lvl',
@@ -115,6 +117,7 @@ class Crawler(CrawlSpider):
                     'opponent_score': battle_obj['opponent_score'],
                     'my_trophies': battle_obj['my_trophies'],
                     'opponent_trophies': battle_obj['opponent_trophies'],
+                    'i_have_clan': battle_obj['i_have_clan'],
                     'opponent_has_clan': battle_obj['opponent_has_clan'],
                     'match_type': battle_obj['match_type']
                 }
