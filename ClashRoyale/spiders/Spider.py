@@ -32,6 +32,9 @@ class Crawler(CrawlSpider):
 
             trophies = battle.css('div.replay__match div.replay__player > div.replay__playerName > div > div.replay__trophies::text').extract()
 
+            if not trophies:
+                continue
+                
             battle_obj['my_trophies'] = int(trophies[0])
 
             battle_obj['opponent_trophies'] = int(trophies[1])
