@@ -8,11 +8,11 @@ import USER_ID
 class Crawler(CrawlSpider):
     name = 'crSpider'
     allowed_domains = ['statsroyale.com']
-    start_urls = ['https://statsroyale.com/profile/' + USER_ID.USER_ID + '/battles']
+    start_urls = ['https://statsroyale.com/profile/' + USER_ID.USER_ID]
 
     def parse(self, response):
-        sel = Selector(response)        
-
+        sel = Selector(response)
+        
         battles = sel.css('.replay')
 
         battles_objs = []
@@ -154,3 +154,8 @@ class Crawler(CrawlSpider):
 
             if csv_file_r:
                 csv_file_r.close()
+
+
+
+
+
