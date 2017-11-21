@@ -12,8 +12,8 @@ class Crawler(CrawlSpider):
 
     def parse(self, response):
         sel = Selector(response)        
-
-        battles = sel.css('.replay')
+        
+        battles = sel.css('div[data-type="ranked"]')
 
         battles_objs = []
 
@@ -30,7 +30,7 @@ class Crawler(CrawlSpider):
 
             battle_obj['opponent_score'] = int(score[1])
 
-            trophies = battle.css('div.replay__match div.replay__player > div.replay__playerName > div > div.replay__trophies::text').extract()
+            trophies = battle.css('div.replay__match div.replay__player > div.replay__playerName > div > div.replay__trophies::text').extract()            
 
             if not trophies:
                 continue
@@ -45,7 +45,8 @@ class Crawler(CrawlSpider):
 
             battle_obj['opponent_has_clan'] = 'n' if 'No Clan' == clans[1].strip() else 'y'
 
-            battle_obj['match_type'] = battle.css('div.replay__header > div.replay__type > div::attr(class)')[0].extract()
+            battle_obj['match_type'] = battle.css('div.replay__header > div.replay__type > div::attr(class)')
+            battle_obj['match_type'] = battle_obj['match_type'][0].extract() if len(battle_obj['match_type']) > 0 else 'replay__ladderBattleType'
 
             decks = battle.css('div.replay__match div.replay__player > div.replay__decklist')
 
@@ -86,7 +87,6 @@ class Crawler(CrawlSpider):
             battles_objs.append(battle_obj)
 
         file_path = './clash-royale.csv'
-
 
         try:
             csv_file_r = open(file_path, 'r')
