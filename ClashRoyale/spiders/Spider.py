@@ -12,7 +12,7 @@ class Crawler(CrawlSpider):
 
     def parse(self, response):
         sel = Selector(response)        
-        
+
         battles = sel.css('div[data-type="ranked"]')
 
         battles_objs = []
@@ -86,7 +86,7 @@ class Crawler(CrawlSpider):
 
             battles_objs.append(battle_obj)
 
-        file_path = './clash-royale.csv'
+        file_path = './' + USER_ID.USER_ID + '-clash-royale.csv'
 
         try:
             csv_file_r = open(file_path, 'r')
@@ -111,8 +111,7 @@ class Crawler(CrawlSpider):
 
             writer.writeheader()
 
-            for battle_obj in battles_objs:
-                
+            for battle_obj in battles_objs:                
                 row = {
                     'my_result': battle_obj['my_result'],
                     'my_score': battle_obj['my_score'],
@@ -147,7 +146,6 @@ class Crawler(CrawlSpider):
                 for row in reader:
                     writer.writerow(row)
 
-            if csv_file_r:
                 os.remove(file_path)
 
             os.rename(aux_file_path, file_path)
