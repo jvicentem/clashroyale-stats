@@ -1,9 +1,9 @@
 import csv
 import CARDS_INFO
 import numpy as np
-import USER_ID_DEV
+from USER_ID import USER_ID
 
-file_path = './ClashRoyale/' + USER_ID_DEV.USER_ID + '-clash-royale.csv'
+file_path = './ClashRoyale/' + USER_ID + '-clash-royale.csv'
 
 with open(file_path, 'r') as csv_file:
     reader = csv.DictReader(csv_file)
@@ -126,7 +126,7 @@ with open(file_path, 'r') as csv_file:
 
     csv_file.seek(0)
 
-    da_file_path = './' + USER_ID_DEV.USER_ID + '-clash-royale-da.csv'
+    da_file_path = './' + USER_ID + '-clash-royale-da.csv'
 
     fields = (['my_result', 'my_score', 'points', 'opponent_score', 'my_trophies', 'opponent_trophies', 'i_have_clan', 'opponent_has_clan', 'match_type', 
                'my_deck_elixir', 'op_deck_elixir', 'my_troops', 'my_buildings', 'my_spells', 'op_troops', 'op_buildings', 'op_spells', 'my_commons', 'my_rares',
