@@ -3,16 +3,23 @@ from scrapy.spiders import CrawlSpider
 import re
 import csv
 import os
-import USER_ID
+from USER_ID import USER_ID
 
 class Crawler(CrawlSpider):
     name = 'crSpider'
     allowed_domains = ['statsroyale.com']
-    start_urls = ['https://statsroyale.com/profile/' + USER_ID.USER_ID + '/battles']
+    start_urls = ['https://statsroyale.com/profile/' + USER_ID + '/battles']
 
     def parse(self, response):
         sel = Selector(response)        
 
+        battles_objs = self.get_battles_info(sel)
+
+        file_path = './' + USER_ID + '-clash-royale.csv'
+
+        self.add_new_battles_to_file(file_path, battles_objs)        
+                    
+    def get_battles_info(self, sel):
         battles = sel.css('div[data-type="ranked"]')
 
         battles_objs = []
@@ -84,14 +91,20 @@ class Crawler(CrawlSpider):
             points = points.strip().split('•')
             battle_obj['points'] = int(points[0]) if len(points) > 1 else 0
 
-            battles_objs.append(battle_obj)
+            battles_objs.append(battle_obj)      
 
-        file_path = './' + USER_ID.USER_ID + '-clash-royale.csv'
+        return battles_objs      
 
+    def add_new_battles_to_file(self, file_path, battles_objs):
         try:
             csv_file_r = open(file_path, 'r')
             reader = csv.DictReader(csv_file_r)
-            newest_battle_in_csv = next(reader)            
+            newest_battle_in_old_csv = next(reader)     
+
+            for key in newest_battle_in_old_csv:
+                if newest_battle_in_old_csv[key].isdigit():
+                    newest_battle_in_old_csv[key] = int(newest_battle_in_old_csv[key])
+
         except FileNotFoundError:
             csv_file_r = None
 
@@ -110,6 +123,8 @@ class Crawler(CrawlSpider):
             writer = csv.DictWriter(csv_file, dialect="excel", lineterminator='\n', fieldnames=fields)
 
             writer.writeheader()
+
+            new_battles_count = 0
 
             for battle_obj in battles_objs:                
                 row = {
@@ -135,12 +150,31 @@ class Crawler(CrawlSpider):
                     row['op_card_%d_lvl' % number] = card['lvl']                
 
                 if csv_file_r:
-                    if not newest_battle_in_csv == row:
+                    if not newest_battle_in_old_csv == row:
                         writer.writerow(row)
+                        new_battles_count += 1
                     else:
                         break
                 else:
                     writer.writerow(row)
+                    new_battles_count += 1
+
+            if new_battles_count == 0:
+                print('*****************************************************************************************************************************')
+                print('*****************************************************************************************************************************')
+                print('                        W   A   R  N   I   N   G: Now new battles added.')
+                print()
+                print(''' 
+                        Either you haven\'t played in a while 
+                        or
+                        there are no new battles to add
+                        or 
+                        you haven\'t pressed "Refresh" button in ''' + self.start_urls[0])
+                print()
+                print('*****************************************************************************************************************************')
+                print('*****************************************************************************************************************************')      
+            else:
+                print('%d battles added' % new_battles_count)          
 
             if csv_file_r:
                 for row in reader:
