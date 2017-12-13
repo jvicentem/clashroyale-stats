@@ -1,1 +1,2 @@
 Scrapy==1.0.5.post4_g4b324a8
+numpy==1.13.3
