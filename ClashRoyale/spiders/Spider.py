@@ -101,7 +101,7 @@ class Crawler(CrawlSpider):
             csv_file_r = open(file_path, 'r')
             reader = csv.DictReader(csv_file_r)
 
-            n_previous_battles = sum(1 for line in csv_file_r)
+            n_previous_battles = sum(1 for line in csv_file_r) - 1 #Discount header line
             csv_file_r.seek(0)
 
         except FileNotFoundError:
