@@ -159,7 +159,7 @@ class Crawler(CrawlSpider):
                 aux_df.drop_duplicates(subset=None, inplace=True)
                 aux_df.to_csv(aux_file_path, index = False)
 
-            new_battles_count = aux_df.shape[0] - n_previous_battles
+                new_battles_count = aux_df.shape[0] - n_previous_battles
 
             if new_battles_count == 0:
                 print('*****************************************************************************************************************************')
