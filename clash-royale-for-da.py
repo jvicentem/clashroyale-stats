@@ -168,20 +168,33 @@ with open(file_path, 'r') as csv_file:
             line['op_commons'] = op_decks_rarities[i]['Common']       
             line['op_rares'] = op_decks_rarities[i]['Rare']       
             line['op_epics'] = op_decks_rarities[i]['Epic']       
-            line['op_legendaries'] = op_decks_rarities[i]['Legendary']                   
+            line['op_legendaries'] = op_decks_rarities[i]['Legendary']           
 
-            for i in list(range(1, 9)):
-                line['my_' + row['my_card_%d' % i]] = row['my_card_%d_lvl' % i]
 
-                for j in list(range(1, 9)):
-                    if i != j:
-                        line['my_' + row['my_card_%d' % j]] = 0
+            op_cards_aux = []
+            for j in list(range(1, 9)):
+                line['op_' + row['op_card_%d' % j]] = row['op_card_%d_lvl' % j]
+                
+                op_cards_aux.append('op_' + row['op_card_%d' % j])
+             
+            op_non_used_cards = set(op_cards) - set(op_cards_aux)
 
-            for i in list(range(1, 9)):
-                line['op_' + row['op_card_%d' % i]] = row['op_card_%d_lvl' % i]
+            for card in op_non_used_cards:
+                line[card] = 0
 
-                for j in list(range(1, 9)):
-                    if i != j:
-                        line['op_' + row['op_card_%d' % j]] = 0                
+
+            my_cards_aux = []
+            for j in list(range(1, 9)):
+                line['my_' + row['my_card_%d' % j]] = row['my_card_%d_lvl' % j]
+
+                my_cards_aux.append('my_' + row['my_card_%d' % j])
+
+            my_non_used_cards = set(my_cards) - set(my_cards_aux)
+
+            for card in my_non_used_cards:
+                line[card] = 0
+
 
             writer.writerow(line)
+
+            line = {}
