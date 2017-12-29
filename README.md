@@ -1,7 +1,11 @@
 # clashroyale-stats
 statsroyale scrapper to get stats
 
-NOTE: I've realised that CR-api project includes battles info so it's very likely this project will use CR-api in the future.
+### NOTE: 
+I've realised that CR-api project includes battles info so it's very likely this project will use CR-api in the future.
+
+
+<br>
 
 Go to https://statsroyale.com and follow the instructions. You need to generate your matches history.
 
