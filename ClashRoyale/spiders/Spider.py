@@ -18,7 +18,9 @@ class Crawler(CrawlSpider):
 
         file_path = './' + USER_ID + '-clash-royale.csv'
 
-        self.add_new_battles_to_file(file_path, battles_objs)        
+        self.add_new_battles_to_file(file_path, battles_objs) 
+
+        self.fix_points(file_path)       
                     
     def get_battles_info(self, sel):
         battles = sel.css('div[data-type="ranked"]')
@@ -156,7 +158,8 @@ class Crawler(CrawlSpider):
 
             if csv_file_r:
                 aux_df = pd.read_csv(aux_file_path, sep=',').append(pd.read_csv(file_path, sep=','))
-                aux_df.drop_duplicates(subset=None, inplace=True)
+                aux_df.drop_duplicates(subset=fields.copy().remove('points'), 
+                                       inplace=True)
                 aux_df.to_csv(aux_file_path, index = False)
 
                 new_battles_count = aux_df.shape[0] - n_previous_battles
@@ -164,14 +167,14 @@ class Crawler(CrawlSpider):
             if new_battles_count == 0:
                 print('*****************************************************************************************************************************')
                 print('*****************************************************************************************************************************')
-                print('                        W   A   R  N   I   N   G: Now new battles added.')
+                print('                        W   A   R  N   I   N   G: No new battles added.')
                 print()
                 print(''' 
                         Either you haven\'t played in a while 
                         or
                         there are no new ladder battles to add
                         or 
-                        you haven\'t pressed "Refresh" button in ''' + self.start_urls[0])
+                        you haven\'t pressed "Refresh" button on ''' + self.start_urls[0])
                 print()
                 print('*****************************************************************************************************************************')
                 print('*****************************************************************************************************************************')      
@@ -185,3 +188,41 @@ class Crawler(CrawlSpider):
 
             if csv_file_r:
                 csv_file_r.close()
+
+    def fix_points(self, file_path):
+        with open(file_path, 'r') as csv_fileR:
+            reader = csv.DictReader(csv_fileR, dialect='excel')
+
+            lines = []
+
+            # Skipping header
+            fields = reader.fieldnames
+
+            for row in reader:
+                lines.append(row)
+
+            for i in range(0, len(lines)):
+                result_not_draw = lines[i]['my_result'] != 'Draw'                
+                points_eq_zero = lines[i]['points'] == '0' 
+
+                if (result_not_draw and points_eq_zero and ((i + 1) < len(lines))):
+                    lines[i]['points'] = int(lines[i]['my_trophies']) - int(lines[i + 1]['my_trophies'])
+                    #print(lines[i]['points'])
+
+                # In case you want to replace wrong points values with None, uncomment the line below.
+                # This happens when there are battles that weren't saved so the difference
+                # of trophies between the moment t and the moment (t + x, x = unknown number of battles) 
+                # is bigger or lower than the number of trophies you can win in one battle.
+
+                #     lines[i]['points'] = None if abs(lines[i]['points']) > 40 else lines[i]['points']
+
+
+        with open(file_path, 'w') as csv_fileW:
+            writer = csv.DictWriter(csv_fileW, dialect='excel', lineterminator='\n', fieldnames=fields)
+
+            writer.writeheader()
+
+            for row in lines:
+                writer.writerow(row)
+
+            csv_fileW.flush()
