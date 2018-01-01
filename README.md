@@ -1,6 +1,14 @@
 # clashroyale-stats
 statsroyale scrapper to get stats
 
+Exploratory Data Analysis of my Clash Royale account data:
+
+https://www.kaggle.com/jonathanbouchet/jose-vicente-s-data-on-clash-royal
+
+https://www.kaggle.com/pepe93/eda-of-my-clash-royale-battles/notebook
+
+
+
 ### NOTE: 
 I've realised that CR-api project includes battles info so it's very likely this project will use CR-api in the future.
 
