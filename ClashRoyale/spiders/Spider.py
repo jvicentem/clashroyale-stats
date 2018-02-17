@@ -69,9 +69,14 @@ class Crawler(CrawlSpider):
 
                 name = re.findall('/card/(.*)', name)[0].replace('+', '_')
                 
-                lvl = card.css('div > span::text')[0].extract()
+                lvl_str = card.css('div > span::text')[0].extract()
 
-                lvl = int(re.findall('Lvl (.*)', lvl)[0])
+                lvl = re.findall('Lvl (.*)', lvl_str)
+
+                if (not lvl):
+                    lvl = re.findall('lvl\.(.*)', lvl_str)
+
+                lvl = int(lvl[0])      
 
                 battle_obj['my_deck'].append({'name': name, 'lvl': lvl})
 
@@ -84,9 +89,14 @@ class Crawler(CrawlSpider):
 
                 name = re.findall('/card/(.*)', name)[0].replace('+', '_')
                 
-                lvl = card.css('div > span::text')[0].extract()
+                lvl_str = card.css('div > span::text')[0].extract()
 
-                lvl = int(re.findall('Lvl (.*)', lvl)[0])             
+                lvl = re.findall('Lvl (.*)', lvl_str)
+
+                if (not lvl):
+                    lvl = re.findall('lvl\.(.*)', lvl_str)
+
+                lvl = int(lvl[0])          
 
                 battle_obj['opponent_deck'].append({'name': name, 'lvl': lvl})   
 
